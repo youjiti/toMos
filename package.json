@@ -11,7 +11,8 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:tomos.toMo"
+		"onCommand:tomos.toMo",
+		"onCommand:tomos.toPage"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
@@ -19,6 +20,10 @@
 			{
 				"command": "tomos.toMo",
 				"title": "跳转到models文件"
+			},
+			{
+				"command": "tomos.toPage",
+				"title": "toPage"
 			}
 		],
 		"menus": {
@@ -30,13 +35,13 @@
 				}
 			]
 		},
-    "keybindings": [
-      {
-        "when": "editorHasSelection",
-        "command": "tomos.toMo",
-        "key": "ctrl+m"
-      }
-    ]
+		"keybindings": [
+			{
+				"when": "editorHasSelection",
+				"command": "tomos.toMo",
+				"key": "ctrl+m"
+			}
+		]
 	},
 	"scripts": {
 		"vscode:prepublish": "yarn run compile",
@@ -47,6 +52,7 @@
 		"test": "node ./out/test/runTest.js"
 	},
 	"devDependencies": {
+		"@types/babel__traverse": "^7.11.0",
 		"@types/glob": "^7.1.3",
 		"@types/mocha": "^8.0.0",
 		"@types/node": "^14.0.27",
@@ -59,5 +65,8 @@
 		"typescript": "^3.8.3",
 		"vscode-test": "^1.4.0"
 	},
-	"dependencies": {}
+	"dependencies": {
+		"@babel/parser": "^7.13.9",
+		"@babel/traverse": "^7.13.0"
+	}
 }
