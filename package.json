@@ -1,5 +1,5 @@
 {
-  "name": "tomos",
+	"name": "tomos",
 	"displayName": "toMos",
 	"description": "",
 	"version": "0.0.1",
@@ -10,16 +10,25 @@
 		"Other"
 	],
 	"activationEvents": [
-        "onCommand:tomos.helloWorld"
+		"onCommand:tomos.toMo"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
 		"commands": [
 			{
-				"command": "tomos.helloWorld",
-				"title": "Hello World"
+				"command": "tomos.toMo",
+				"title": "跳转到models文件"
 			}
-		]
+		],
+		"menus": {
+			"editor/context": [
+				{
+					"when": "editorHasSelection",
+					"command": "tomos.toMo",
+					"group": "6_px"
+				}
+			]
+		}
 	},
 	"scripts": {
 		"vscode:prepublish": "yarn run compile",
@@ -30,16 +39,20 @@
 		"test": "node ./out/test/runTest.js"
 	},
 	"devDependencies": {
-		"@types/vscode": "^1.53.0",
 		"@types/glob": "^7.1.3",
 		"@types/mocha": "^8.0.0",
 		"@types/node": "^14.0.27",
-		"eslint": "^7.6.0",
+		"@types/vscode": "^1.53.0",
 		"@typescript-eslint/eslint-plugin": "^3.8.0",
 		"@typescript-eslint/parser": "^3.8.0",
+		"eslint": "^7.6.0",
 		"glob": "^7.1.6",
 		"mocha": "^8.0.1",
 		"typescript": "^3.8.3",
 		"vscode-test": "^1.4.0"
+	},
+	"dependencies": {
+		"@babel/parser": "^7.13.9",
+		"@babel/traverse": "^7.13.0"
 	}
 }
