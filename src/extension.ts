@@ -89,7 +89,7 @@ export function activate(context: vscode.ExtensionContext) {
     const arr = text!.split('/');
     const na = arr[0].indexOf("'") >= 0 ? arr[0].split("'")[1] : arr[0];
     const ds = arr[1].indexOf("'") >= 0 ? arr[1].split("'")[0] : arr[1];
-    vscode.workspace.findTextInFiles({ pattern: "namespace: " + "'" + na + "'" }, (s: any, m: any) => {
+    vscode.workspace.findTextInFiles({ pattern: "namespace: " + "'" + na + "'" }, (s: vscode.TextSearchResult) => {
       if(s.uri){
         vscode.workspace.openTextDocument(s.uri).then((document) => {
           const texts = document.getText().split('\n');
