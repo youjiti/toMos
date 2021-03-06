@@ -6,7 +6,7 @@
 	"engines": {
 		"vscode": "^1.53.0"
 	},
-  "publisher": "youjiti-w",
+	"publisher": "youjiti-w",
 	"categories": [
 		"Other"
 	],
@@ -52,8 +52,5 @@
 		"typescript": "^3.8.3",
 		"vscode-test": "^1.4.0"
 	},
-	"dependencies": {
-		"@babel/parser": "^7.13.9",
-		"@babel/traverse": "^7.13.0"
-	}
+	"dependencies": {}
 }
