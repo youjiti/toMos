@@ -39,21 +39,17 @@ function compile(code: any, fileName: String, na: String, ds: String, sparePath?
               modpath = p;
               vscode.workspace.openTextDocument(modpath).then((document) => {
                 const texts = document.getText().split('\n');
-                let f = false
-                texts.forEach((s: any, index: any) => {
-                  if (s.indexOf(ds + '(') >= 0) {
-                    f = true
-                    const range = new vscode.Range(new vscode.Position(index, 0), new vscode.Position(index + 1, 0));
-                    vscode.window.showTextDocument(document, {
-                      selection: range,
-                    });
-                  }
-                });
-                if(!f){
-                  vscode.window.showWarningMessage('models文件未能成功定位，请手动查找');
+                let index = texts.findIndex((s: any, i: any) => s.indexOf(ds + '(') >= 0)
+                if(index === -1){
+                  index = 0
+                  vscode.window.showWarningMessage('effects或者reducers未能成功定位，请手动查找');
                 }
+                const range = new vscode.Range(new vscode.Position(index, 0), new vscode.Position(index + 1, 0));
+                vscode.window.showTextDocument(document, {
+                  selection: range,
+                });
               })
-            }else if(flag){
+            } else if (flag) {
               vscode.window.showWarningMessage('models文件未能成功定位，请手动查找');
             }
           }
