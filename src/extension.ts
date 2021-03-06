@@ -4,7 +4,7 @@ const fs = require("fs");
 const parser = require("@babel/parser");
 const traverse = require("@babel/traverse");
 
-function compile(code: any, fileName: String, na: String, ds: String, sparePath?: String) {
+function compile(code: any, fileName: String, na: String, ds: String, sparePath?: String, flag?: Boolean) {
   const ast = parser.parse(code, {
     sourceType: "module",
     plugins: ["typescript"]
@@ -17,10 +17,16 @@ function compile(code: any, fileName: String, na: String, ds: String, sparePath?
         (parent.parent.arguments || []).forEach((element: any) => {
           if (element.type === 'ArrayExpression') {
             let modpath: any
-            (element.elements || []).forEach((node: any) => {
+            let p
+            for (let node of (element.elements || [])) {
               if (!find) {
                 modpath = node.arguments[0].value.split('@/pages')[1]
-                const file = fs.readFileSync(vscode.workspace.rootPath + '/src/pages' + modpath + '.ts', 'utf-8');
+                p = vscode.workspace.rootPath + '/src/pages' + modpath + '.ts'
+                const exists = fs.existsSync(p)
+                if (!exists) {
+                  p = vscode.workspace.rootPath + '/src/pages' + modpath + '/index.ts'
+                }
+                const file = fs.readFileSync(p, 'utf-8');
                 file.split('\n').find((currentValue: any) => {
                   if (currentValue.indexOf("namespace: '" + na + "'") >= 0) {
                     find = true
@@ -28,24 +34,31 @@ function compile(code: any, fileName: String, na: String, ds: String, sparePath?
                   }
                 })
               }
-            });
+            }
             if (find) {
-              modpath = vscode.workspace.rootPath + '/src/pages' + modpath + '.ts';
+              modpath = p;
               vscode.workspace.openTextDocument(modpath).then((document) => {
                 const texts = document.getText().split('\n');
+                let f = false
                 texts.forEach((s: any, index: any) => {
-                  if (s.indexOf(ds+'(') >= 0) {
+                  if (s.indexOf(ds + '(') >= 0) {
+                    f = true
                     const range = new vscode.Range(new vscode.Position(index, 0), new vscode.Position(index + 1, 0));
                     vscode.window.showTextDocument(document, {
                       selection: range,
                     });
                   }
                 });
+                if(!f){
+                  vscode.window.showWarningMessage('models文件未能成功定位，请手动查找');
+                }
               })
+            }else if(flag){
+              vscode.window.showWarningMessage('models文件未能成功定位，请手动查找');
             }
           }
         });
-        return;
+        return find;
       }
     }
   };
@@ -83,11 +96,9 @@ export function activate(context: vscode.ExtensionContext) {
     const arr = text.split('/');
     const na = arr[0].indexOf("'") >= 0 ? arr[0].split("'")[1] : arr[0];
     const ds = arr[1].indexOf("'") >= 0 ? arr[1].split("'")[0] : arr[1];
-    const find = compile(file, fileName, na, ds)
-    if (!find) {
-      const finds = compile(file, fileName, na, ds, '@/pages/KnowledgePay/Root')
-      if(!finds){
-        vscode.window.showWarningMessage('models文件未能成功定位，请手动查找');
+    if (!compile(file, fileName, na, ds)) {
+      if (!compile(file, fileName, na, ds, '@/pages/KnowledgePay/Root')) {
+        compile(file, fileName, na, ds, '@/pages/KnowledgePay/' + fileName.split('KnowledgePay/')[1].split('/')[0], true)
       }
     }
   });
